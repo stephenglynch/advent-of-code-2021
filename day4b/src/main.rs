@@ -93,20 +93,25 @@ fn main() {
     let raw = include_str!("input.txt");
     let (series, mut boards) = parse_input(raw);
 
-    let mut boards_in_play: Vec<&Board> = boards.iter().collect();
+    let mut boards_in_play: Vec<_> = boards.iter_mut().collect();
 
     for n in series {
         
-        for board in boards.iter_mut() {
+        for board in boards_in_play.iter_mut() {
             mark_number(board, n);
         }
 
         boards_in_play.retain(|board| {
-            !check_bingo(board)
+            if check_bingo(board) {
+                println!("answer = {}", score_board(board, n));
+                false
+            } else {
+                true
+            }
         });
 
-        if boards_in_play.len() == 1 {
-            println!("answer = {}", score_board(boards_in_play[0], n))
+        if boards_in_play.len() == 0 {
+            break;   
         }
     }
 }
