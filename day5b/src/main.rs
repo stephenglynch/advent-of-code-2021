@@ -1,6 +1,8 @@
 use std::collections::HashMap; 
 use std::num::ParseIntError;
 use std::str::FromStr;
+use std::fmt;
+
 
  #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 struct Point {
@@ -34,6 +36,32 @@ impl FromStr for Point {
         let y = coords.next().unwrap().parse()?;
 
         Ok(Point {x: x, y: y})
+    }
+}
+
+
+fn display_map(m: &VentMap) {
+    let mut max_x = 0;
+    let mut max_y = 0;
+
+    for p in m.keys() {
+        if p.x > max_x {
+            max_x = p.x;
+        }
+        if p.y > max_y {
+            max_y = p.y;
+        }
+    }
+
+    for i in 0..=max_x {
+        for j in 0..=max_y {
+            let p = Point {x: j, y: i};
+            match m.get(&p) {
+                Some(n) => print!("{:01}", n),
+                None => print!(".")
+            }
+        }
+        println!("");
     }
 }
 
@@ -147,6 +175,7 @@ fn main() {
         add_points_to_map(&mut vent_map, p1, p2);
     }
 
+    // Calculate number of overlapping lines
     let mut total = 0;
     for no_vents in vent_map.values() {
         if *no_vents > 1 {
